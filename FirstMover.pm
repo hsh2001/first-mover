@@ -42,4 +42,16 @@ sub expectValue {
   return $self;
 }
 
+sub expectRef {
+  my ($self, $ref) = @_;
+  my $testName = $self->{name};
+  my $result = $self->{result};
+  my $resultRef = lc(ref $result);
+  $ref = lc($ref);
+  unless ($resultRef eq $ref) {
+    warn "The reference of result is B even though A was expected for reference in test:'$testName'.\n";
+  }
+  return $self;
+}
+
 return 1;
