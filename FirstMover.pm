@@ -37,7 +37,7 @@ sub expectValue {
   my $testName = $self->{name};
   my $result = $self->{result};
   unless ($result eq $value) {
-    warn "The result value is $result even though $value was expected.\n";
+    warn "The result is $result even though $value was expected in test:'$testName'.\n";
   }
   return $self;
 }
