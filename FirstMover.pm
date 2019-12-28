@@ -49,7 +49,11 @@ sub expectRef {
   my $resultRef = lc(ref $result);
   $ref = lc($ref);
   unless ($resultRef eq $ref) {
-    warn "The reference of result is B even though A was expected for reference in test:'$testName'.\n";
+    warn "The reference of result is "
+        .uc($resultRef)
+        ." even though "
+        .uc($ref)
+        ." was expected for reference in test:'$testName'.\n";
   }
   return $self;
 }
