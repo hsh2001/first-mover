@@ -1,6 +1,11 @@
 #!perl
 use strict;
 
+# Repository: https://github.com/hsh2001/first-mover
+# Issue: https://github.com/hsh2001/first-mover
+# Author: https://github.com/hsh2001
+# License: MIT License
+
 use Term::ANSIColor;
 
 package FirstMover;
