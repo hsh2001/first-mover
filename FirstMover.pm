@@ -1,6 +1,8 @@
 #!perl
 use strict;
 
+use Term::ANSIColor;
+
 package FirstMover;
 
 sub _trim_string {
@@ -9,12 +11,27 @@ sub _trim_string {
   return $string;
 }
 
+sub _add_color_string {
+  my ($color, $string) = @_;
+  return Term::ANSIColor::color($color)
+        .$string
+        .Term::ANSIColor::color("reset");
+}
+
+sub _get_warn_message {
+  return _add_color_string("red", shift);
+}
+
+sub _get_success_message {
+  return _add_color_string("green", shift);
+}
+
 sub new {
   my ($self, $testName, $testCode) = @_;
   $self = bless {}, $self;
 
   unless ("code" eq lc ref $testCode) {
-    die "Second argument is not a CODE in test:$testName\n";
+    die _get_warn_message "Second argument is not a CODE in test:$testName\n";
   }
 
   $self->{name} = $testName;
@@ -37,7 +54,7 @@ sub expectValue {
   my $testName = $self->{name};
   my $result = $self->{result};
   unless ($result eq $value) {
-    warn "The result is $result even though $value was expected in test:'$testName'.\n";
+    warn _get_warn_message "The result is $result even though $value was expected in test:'$testName'.\n";
   }
   return $self;
 }
@@ -49,11 +66,13 @@ sub expectRef {
   my $resultRef = lc(ref $result);
   $ref = lc($ref);
   unless ($resultRef eq $ref) {
-    warn "The reference of result is "
-        .uc($resultRef)
-        ." even though "
-        .uc($ref)
-        ." was expected for reference in test:'$testName'.\n";
+    warn _get_warn_message(
+      "The reference of result is "
+      .uc($resultRef)
+      ." even though "
+      .uc($ref)
+      ." was expected for reference in test:'$testName'.\n"
+    );
   }
   return $self;
 }
