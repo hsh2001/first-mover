@@ -68,78 +68,84 @@ sub new {
   return $self;
 }
 
+sub _expect {
+  my ($self, $errorMessage, $code) = @_;
+  my ($result, $testName) = map {$self->{$_}} (
+    'result', 'name',
+  );
+
+  return $self unless $self->{isSuccess};
+
+  unless ("code" eq lc ref $code) {
+    die _getWarnMessage "Second argument is not a CODE in test:$testName";
+  }
+
+  unless ($code->($result)) {
+    $self->{isTestFail} = 1;
+    warn _getWarnMessage $errorMessage;
+  }
+
+  return $self;
+}
+
 sub expectValue {
   my ($self, $value) = @_;
-  my $testName = $self->{name};
-  my $result = $self->{result};
-  return $self unless $self->{isSuccess};
-  unless ($result eq $value) {
-    $self->{isTestFail} = 1;
-    warn _getWarnMessage "The result is $result even though $value was expected in test:'$testName'.";
-  }
-  return $self;
+  my ($result, $testName) = map {$self->{$_}} (
+    'result', 'name',
+  );
+  my $errorMessage = "The result is $result even though $value was expected in test:'$testName'.";
+  return $self->_expect($errorMessage, sub {
+    return $value eq shift;
+  });
 }
 
 sub expectRef {
   my ($self, $ref) = @_;
-  my $testName = $self->{name};
-  my $result = $self->{result};
-  my $resultRef = lc(ref $result);
-  $ref = lc($ref);
-  return $self unless $self->{isSuccess};
-  unless ($resultRef eq $ref) {
-    $self->{isTestFail} = 1;
-    warn _getWarnMessage(
-      "The reference of result is "
-      .uc($resultRef)
-      ." even though "
-      .uc($ref)
-      ." was expected for reference in test:'$testName'."
-    );
-  }
-  return $self;
+  my ($result, $testName) = map {$self->{$_}} (
+    'result', 'name',
+  );
+  my $errorMessage =
+    "The reference of result is "
+    .uc(ref $result)
+    ." even though "
+    .uc($ref)
+    ." was expected for reference in test:'$testName'.";
+  return $self->_expect($errorMessage, sub {
+    return lc(ref shift) eq lc($ref);
+  });
 }
 
 sub expectNumber {
   my $self = shift;
-  my $testName = $self->{name};
-  my $result = $self->{result};
-  return $self unless $self->{isSuccess};
-  unless (_isNumber $result) {
-    $self->{isTestFail} = 1;
-    warn _getWarnMessage(
-      "The result is not a number even though number was expected in test:'$testName'."
-    );
-  }
-  return $self;
+  my ($testName) = map {$self->{$_}} (
+    'name',
+  );
+  my $errorMessage = "The result is not a number even though number was expected in test:'$testName'.";
+  return $self->_expect($errorMessage, sub {
+    return _isNumber shift;
+  });
 }
 
 sub expectFalsy {
   my $self = shift;
-  my $testName = $self->{name};
-  my $result = $self->{result};
-  return $self unless $self->{isSuccess};
-  if ($result) {
-    $self->{isTestFail} = 1;
-    warn _getWarnMessage(
-      "The result is truthy value even though falsy value was expected in test:'$testName'."
-    );
-  }
-  return $self;
+  my ($testName) = map {$self->{$_}} (
+    'name',
+  );
+  my $errorMessage = "The result is truthy value even though falsy value was expected in test:'$testName'.";
+  return $self->_expect($errorMessage, sub {
+    return !shift;
+  });
 }
 
 sub expectTruthy {
   my $self = shift;
-  my $testName = $self->{name};
-  my $result = $self->{result};
-  return $self unless $self->{isSuccess};
-  unless ($result) {
-    $self->{isTestFail} = 1;
-    warn _getWarnMessage(
-      "The result is falsy value even though truthy value was expected in test:'$testName'."
-    );
-  }
-  return $self;
+  my ($testName) = map {$self->{$_}} (
+    'name',
+  );
+  my $errorMessage = "The result is falsy value even though truthy value was expected in test:'$testName'.";
+  return $self->_expect($errorMessage, sub {
+    return shift;
+  });
 }
 
 sub done {
