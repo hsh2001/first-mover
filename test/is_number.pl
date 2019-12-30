@@ -6,9 +6,9 @@ use Cwd qw(abs_path);
 
 use FirstMover dirname(dirname abs_path $0);
 
-sub _is_number {
+sub isNumber {
   my $value = shift;
-  return FirstMover::_is_number($value);
+  return FirstMover::_isNumber($value);
 }
 
 for my $number (
@@ -23,14 +23,16 @@ for my $number (
 ) {
   FirstMover
   ->new(
-    "check $number is number",
+    "check \"$number\" is number",
     sub {
-      return _is_number($number);
+      return isNumber($number);
     }
   )
   ->expectValue(1)
   ->done;
 }
+
+print "\n";
 
 for my $notNumber (
   "Hello world",
@@ -47,9 +49,9 @@ for my $notNumber (
 ) {
   FirstMover
   ->new(
-    "check $notNumber is not a number",
+    "check \"$notNumber\" is not a number",
     sub {
-      return !_is_number($notNumber);
+      return !isNumber($notNumber);
     }
   )
   ->expectValue(1)

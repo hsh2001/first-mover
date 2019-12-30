@@ -10,28 +10,28 @@ use Term::ANSIColor;
 
 package FirstMover;
 
-sub _trim_string {
+sub _trimString {
   my $string = shift;
   $string =~ s/^\s+|\s+$//g;
   return $string;
 }
 
-sub _add_color_string {
+sub _addColorString {
   my ($color, $string) = @_;
   return Term::ANSIColor::color($color)
         .$string
         .Term::ANSIColor::color("reset");
 }
 
-sub _get_warn_message {
-  return _add_color_string("red", shift);
+sub _getWarnMessage {
+  return _addColorString("red", shift);
 }
 
-sub _get_success_message {
-  return _add_color_string("green", shift);
+sub _getSuccessMessage {
+  return _addColorString("green", shift);
 }
 
-sub _is_number {
+sub _isNumber {
   my $value = shift;
   $value = "$value";
   return 0 if $value =~ /\s/g;
@@ -43,9 +43,10 @@ sub new {
   $self = bless {}, $self;
 
   unless ("code" eq lc ref $testCode) {
-    die _get_warn_message "Second argument is not a CODE in test:$testName\n";
+    die _getWarnMessage "Second argument is not a CODE in test:$testName\n";
   }
 
+  $testName =~ s/\n/\\n/g;
   $self->{name} = $testName;
   $self->{code} = $testCode;
   $self->{error} = 0;
@@ -67,7 +68,7 @@ sub expectValue {
   my $result = $self->{result};
   unless ($result eq $value) {
     $self->{isTestFail} = 1;
-    warn _get_warn_message "The result is $result even though $value was expected in test:'$testName'.\n";
+    warn _getWarnMessage "The result is $result even though $value was expected in test:'$testName'.\n";
   }
   return $self;
 }
@@ -80,7 +81,7 @@ sub expectRef {
   $ref = lc($ref);
   unless ($resultRef eq $ref) {
     $self->{isTestFail} = 1;
-    warn _get_warn_message(
+    warn _getWarnMessage(
       "The reference of result is "
       .uc($resultRef)
       ." even though "
@@ -95,9 +96,9 @@ sub expectNumber {
   my $self = shift;
   my $testName = $self->{name};
   my $result = $self->{result};
-  unless (_is_number $result) {
+  unless (_isNumber $result) {
     $self->{isTestFail} = 1;
-    warn _get_warn_message(
+    warn _getWarnMessage(
       "The result is not a number even though number was expected in test:'$testName'.\n"
     );
   }
@@ -109,7 +110,7 @@ sub done {
   my $testName = $self->{name};
   my $isTestFail = $self->{isTestFail};
   unless ($isTestFail) {
-    print _get_success_message(
+    print _getSuccessMessage(
       "Suceess test: '$testName'\n"
     );
   }
