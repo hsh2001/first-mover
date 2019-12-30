@@ -24,11 +24,11 @@ sub _addColorString {
 }
 
 sub _getWarnMessage {
-  return _addColorString("red", shift);
+  return _addColorString("red", shift)."\n";
 }
 
 sub _getSuccessMessage {
-  return _addColorString("green", shift);
+  return _addColorString("green", shift)."\n";
 }
 
 sub _isNumber {
@@ -43,7 +43,7 @@ sub new {
   $self = bless {}, $self;
 
   unless ("code" eq lc ref $testCode) {
-    die _getWarnMessage "Second argument is not a CODE in test:$testName\n";
+    die _getWarnMessage "Second argument is not a CODE in test:$testName";
   }
 
   $testName =~ s/\n/\\n/g;
@@ -60,7 +60,7 @@ sub new {
     warn _getWarnMessage(
       "Warning while execute: \""
       ._trimString($@)
-      ."\" at test: $testName\n"
+      ."\" at test: $testName"
     );
   }
 
@@ -74,7 +74,7 @@ sub expectValue {
   return $self unless $self->{isSuccess};
   unless ($result eq $value) {
     $self->{isTestFail} = 1;
-    warn _getWarnMessage "The result is $result even though $value was expected in test:'$testName'.\n";
+    warn _getWarnMessage "The result is $result even though $value was expected in test:'$testName'.";
   }
   return $self;
 }
@@ -93,7 +93,7 @@ sub expectRef {
       .uc($resultRef)
       ." even though "
       .uc($ref)
-      ." was expected for reference in test:'$testName'.\n"
+      ." was expected for reference in test:'$testName'."
     );
   }
   return $self;
@@ -107,7 +107,7 @@ sub expectNumber {
   unless (_isNumber $result) {
     $self->{isTestFail} = 1;
     warn _getWarnMessage(
-      "The result is not a number even though number was expected in test:'$testName'.\n"
+      "The result is not a number even though number was expected in test:'$testName'."
     );
   }
   return $self;
@@ -120,7 +120,7 @@ sub done {
   return $self unless $self->{isSuccess};
   unless ($isTestFail) {
     print _getSuccessMessage(
-      "Suceess test: '$testName'\n"
+      "Suceess test: '$testName'"
     );
   }
   return $self;
