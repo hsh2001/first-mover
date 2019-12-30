@@ -114,6 +114,34 @@ sub expectNumber {
   return $self;
 }
 
+sub expectFalsy {
+  my $self = shift;
+  my $testName = $self->{name};
+  my $result = $self->{result};
+  return $self unless $self->{isSuccess};
+  if ($result) {
+    $self->{isTestFail} = 1;
+    warn _getWarnMessage(
+      "The result is truthy value even though falsy value was expected in test:'$testName'."
+    );
+  }
+  return $self;
+}
+
+sub expectTruthy {
+  my $self = shift;
+  my $testName = $self->{name};
+  my $result = $self->{result};
+  return $self unless $self->{isSuccess};
+  unless ($result) {
+    $self->{isTestFail} = 1;
+    warn _getWarnMessage(
+      "The result is falsy value even though truthy value was expected in test:'$testName'."
+    );
+  }
+  return $self;
+}
+
 sub done {
   my $self = shift;
   my $testName = $self->{name};
