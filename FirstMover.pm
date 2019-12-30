@@ -57,6 +57,11 @@ sub new {
   if ($@) {
     $self->{errorMessage} = $@;
     $self->{error} = 1;
+    warn _getWarnMessage(
+      "Warning while execute: \""
+      ._trimString($@)
+      ."\" at test: $testName\n"
+    );
   }
 
   return $self;
@@ -66,6 +71,7 @@ sub expectValue {
   my ($self, $value) = @_;
   my $testName = $self->{name};
   my $result = $self->{result};
+  return $self unless $self->{isSuccess};
   unless ($result eq $value) {
     $self->{isTestFail} = 1;
     warn _getWarnMessage "The result is $result even though $value was expected in test:'$testName'.\n";
@@ -79,6 +85,7 @@ sub expectRef {
   my $result = $self->{result};
   my $resultRef = lc(ref $result);
   $ref = lc($ref);
+  return $self unless $self->{isSuccess};
   unless ($resultRef eq $ref) {
     $self->{isTestFail} = 1;
     warn _getWarnMessage(
@@ -96,6 +103,7 @@ sub expectNumber {
   my $self = shift;
   my $testName = $self->{name};
   my $result = $self->{result};
+  return $self unless $self->{isSuccess};
   unless (_isNumber $result) {
     $self->{isTestFail} = 1;
     warn _getWarnMessage(
@@ -109,6 +117,7 @@ sub done {
   my $self = shift;
   my $testName = $self->{name};
   my $isTestFail = $self->{isTestFail};
+  return $self unless $self->{isSuccess};
   unless ($isTestFail) {
     print _getSuccessMessage(
       "Suceess test: '$testName'\n"
