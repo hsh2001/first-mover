@@ -31,6 +31,13 @@ sub _get_success_message {
   return _add_color_string("green", shift);
 }
 
+sub _is_number {
+  my $value = shift;
+  $value = "$value";
+  return 0 if $value =~ /\s/g;
+  return $value =~ /^(-?\d+\.\d+)$|^(-?\d+)$/gm;
+}
+
 sub new {
   my ($self, $testName, $testCode) = @_;
   $self = bless {}, $self;
@@ -77,6 +84,18 @@ sub expectRef {
       ." even though "
       .uc($ref)
       ." was expected for reference in test:'$testName'.\n"
+    );
+  }
+  return $self;
+}
+
+sub expectNumber {
+  my $self = shift;
+  my $testName = $self->{name};
+  my $result = $self->{result};
+  unless (_is_number $result) {
+    warn _get_warn_message(
+      "The result is not a number even though number was expected in test:'$testName'.\n"
     );
   }
   return $self;
