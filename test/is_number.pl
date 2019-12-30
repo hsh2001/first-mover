@@ -28,7 +28,8 @@ for my $number (
       return _is_number($number);
     }
   )
-  ->expectValue(1);
+  ->expectValue(1)
+  ->done;
 }
 
 for my $notNumber (
@@ -51,5 +52,6 @@ for my $notNumber (
       return !_is_number($notNumber);
     }
   )
-  ->expectValue(1);
+  ->expectValue(1)
+  ->done;
 }

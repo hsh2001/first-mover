@@ -66,6 +66,7 @@ sub expectValue {
   my $testName = $self->{name};
   my $result = $self->{result};
   unless ($result eq $value) {
+    $self->{isTestFail} = 1;
     warn _get_warn_message "The result is $result even though $value was expected in test:'$testName'.\n";
   }
   return $self;
@@ -78,6 +79,7 @@ sub expectRef {
   my $resultRef = lc(ref $result);
   $ref = lc($ref);
   unless ($resultRef eq $ref) {
+    $self->{isTestFail} = 1;
     warn _get_warn_message(
       "The reference of result is "
       .uc($resultRef)
@@ -94,11 +96,25 @@ sub expectNumber {
   my $testName = $self->{name};
   my $result = $self->{result};
   unless (_is_number $result) {
+    $self->{isTestFail} = 1;
     warn _get_warn_message(
       "The result is not a number even though number was expected in test:'$testName'.\n"
     );
   }
   return $self;
 }
+
+sub done {
+  my $self = shift;
+  my $testName = $self->{name};
+  my $isTestFail = $self->{isTestFail};
+  unless ($isTestFail) {
+    print _get_success_message(
+      "Suceess test: '$testName'\n"
+    );
+  }
+  return $self;
+}
+
 
 return 1;
