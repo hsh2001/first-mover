@@ -52,6 +52,7 @@ sub new {
   $self->{error} = 0;
   $self->{isSuccess} = eval {
     $self->{result} = $testCode->();
+    1;
   };
 
   if ($@) {
