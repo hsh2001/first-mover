@@ -126,6 +126,30 @@ sub expectNumber {
   });
 }
 
+sub expectPositiveNumber {
+  my $self = shift;
+  my ($testName) = map {$self->{$_}} (
+    'name',
+  );
+  my $errorMessage = "The result is not a positive number even though positive number was expected in test:'$testName'.";
+  return $self->_expect($errorMessage, sub {
+    my $data = shift;
+    return _isNumber($data) && $data > 0;
+  });
+}
+
+sub expectNegativeNumber {
+  my $self = shift;
+  my ($testName) = map {$self->{$_}} (
+    'name',
+  );
+  my $errorMessage = "The result is not a nagative number even though nagative number was expected in test:'$testName'.";
+  return $self->_expect($errorMessage, sub {
+    my $data = shift;
+    return _isNumber($data) && $data > 0;
+  });
+}
+
 sub expectFalsy {
   my $self = shift;
   my ($testName) = map {$self->{$_}} (
