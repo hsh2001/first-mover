@@ -27,6 +27,7 @@ FirstMover->new(
   }
 )
 ->expectRef("HASH")
+#->expectHashRef
 ->done;
 
 FirstMover->new(
@@ -38,6 +39,7 @@ FirstMover->new(
   }
 )
 ->expectRef("HASH")
+#->expectHashRef
 ->done;
 
 FirstMover->new(
@@ -48,6 +50,7 @@ FirstMover->new(
   }
 )
 ->expectRef("ARRAY")
+#->expectArrayRef
 ->done;
 
 FirstMover->new(
@@ -59,4 +62,5 @@ FirstMover->new(
   }
 )
 ->expectRef("ARRAY")
+#->expectArrayRef
 ->done;

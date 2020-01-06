@@ -115,6 +115,16 @@ sub expectRef {
   });
 }
 
+sub expectArrayRef {
+  my $self = shift;
+  return $self->expectRef("array");
+}
+
+sub expectHashRef {
+  my $self = shift;
+  return $self->expectRef("hash");
+}
+
 sub expectNumber {
   my $self = shift;
   my ($testName) = map {$self->{$_}} (
